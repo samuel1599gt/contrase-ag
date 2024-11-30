@@ -6,15 +6,13 @@ package main;
 import java.awt.Color;
 import java.awt.Toolkit;
 import java.awt.datatransfer.StringSelection;
-import java.awt.Toolkit;
-import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Random;
 import javax.swing.JCheckBox;
-import java.util.Random;
 import javax.swing.BorderFactory;
 import javax.swing.Timer;
+import javax.swing.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.Dimension;
@@ -30,6 +28,8 @@ public class main extends javax.swing.JFrame {
     private static final String UPPERCASE = "QWERTYUIOPASDFGHJKLZXCVBNM";
     private static final String NUMBER = "0123456789";
     private static final String SYMBOL = "#$%&=?*+-!";
+    
+    private javax.swing.JLabel loadingLabel;
 
     public static String generatepassword(int length, boolean useLower, boolean useUpper, boolean useNumbers, boolean useSymbols) {
         String characters = "";
@@ -54,6 +54,16 @@ public class main extends javax.swing.JFrame {
         
         addHoverEffect(jButton1, new Color(255, 182, 193), new Color(255, 105, 180));
         addHoverEffect(jButton2, new Color(135, 206, 250), new Color(30, 144, 255));
+        
+        // Crear JLabel de carga con un texto más visible
+        loadingLabel = new javax.swing.JLabel("Cargando...");
+        loadingLabel.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 18));  // Fuente más grande y en negrita
+        loadingLabel.setForeground(new java.awt.Color(255, 165, 0));  // Color anaranjado
+        loadingLabel.setVisible(false);  // Inicialmente oculto
+        getContentPane().add(loadingLabel);  // Agregar al panel
+
+        // Cambiar las coordenadas de la posición de 'loadingLabel' para que esté por encima de la contraseña
+        loadingLabel.setBounds(200, 200, 150, 30);  // Ajustamos la posición para que esté más arriba
     }
     
     private void addHoverEffect(javax.swing.JButton button, Color hoverColor, Color defaultColor) {
@@ -64,9 +74,9 @@ public class main extends javax.swing.JFrame {
             Timer timer;
             Color currentColor = defaultColor;
             float defaultFontSize = 18f;
-            float hoverFontSize = 20f;  // Tamaño de fuente aumentado ligeramente
+            float hoverFontSize = 20f;
             Dimension defaultSize = new Dimension(button.getWidth(), button.getHeight());
-            Dimension hoverSize = new Dimension(button.getWidth() + 10, button.getHeight() + 10);  // Aumento de tamaño pequeño
+            Dimension hoverSize = new Dimension(button.getWidth() + 10, button.getHeight() + 10);
 
             @Override
             public void mouseEntered(MouseEvent e) {
@@ -85,12 +95,10 @@ public class main extends javax.swing.JFrame {
 
             @Override
             public void mouseExited(MouseEvent e) {
-                // Detener cualquier temporizador anterior antes de comenzar uno nuevo
                 if (timer != null && timer.isRunning()) {
                     timer.stop();
                 }
 
-                // Crear y comenzar un nuevo temporizador para la salida
                 timer = new Timer(10, evt -> {
                     currentColor = blendColors(currentColor, defaultColor, 0.1f);
                     button.setBackground(currentColor);
@@ -98,7 +106,7 @@ public class main extends javax.swing.JFrame {
                     button.setFont(button.getFont().deriveFont(defaultFontSize));
                     button.repaint();
                     if (currentColor.equals(defaultColor)) {
-                        timer.stop(); // Detener el temporizador cuando llegue al color final
+                        timer.stop();
                     }
                 });
                 timer.start();
@@ -114,7 +122,7 @@ public class main extends javax.swing.JFrame {
     }
 
     @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">
+    
     private void initComponents() {
 
         jLabel1 = new javax.swing.JLabel();
@@ -277,11 +285,38 @@ public class main extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {                                         
         pass.setText(generatepassword(jSlider1.getValue(), chkLower.isSelected(), chkUpper.isSelected(), chkNumbers.isSelected(), chkSymbols.isSelected()));
-    }                                        
+    
+    // Mostrar el indicador de carga
+    loadingLabel.setVisible(true);
+    
+    // Generar la contraseña después de un retraso de 1 segundo
+    new Timer(1000, e -> {
+        // Generar la nueva contraseña
+        pass.setText(generatepassword(jSlider1.getValue(), chkLower.isSelected(), chkUpper.isSelected(), chkNumbers.isSelected(), chkSymbols.isSelected()));
+        
+        // Ocultar el indicador de carga
+        loadingLabel.setVisible(false);
+        
+        // Detener el Timer después de una ejecución
+        ((Timer)e.getSource()).stop();
+    }).start();
+}                                 
 
     private void jSlider1StateChanged(javax.swing.event.ChangeEvent evt) {                                      
         pass.setText(generatepassword(jSlider1.getValue(), chkLower.isSelected(), chkUpper.isSelected(), chkNumbers.isSelected(), chkSymbols.isSelected()));
         msg.setText("Longitud: " + jSlider1.getValue());
+    
+        // Mostrar el indicador de carga mientras se genera la nueva contraseña
+        loadingLabel.setVisible(true);
+
+        new Timer(100, e -> {
+            String passGenerated = generatepassword(jSlider1.getValue(), chkLower.isSelected(), chkUpper.isSelected(),
+                    chkNumbers.isSelected(), chkSymbols.isSelected());
+            pass.setText(passGenerated);
+
+            // Ocultar el indicador de carga
+            loadingLabel.setVisible(false);
+        }).start();
     }                                     
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {                                         
@@ -308,7 +343,6 @@ public class main extends javax.swing.JFrame {
     private javax.swing.JLabel msg;
     private javax.swing.JTextPane pass;
 }
-
 
 
 
