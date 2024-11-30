@@ -14,6 +14,10 @@ import java.util.Random;
 import javax.swing.JCheckBox;
 import java.util.Random;
 import javax.swing.BorderFactory;
+import javax.swing.Timer;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.Dimension;
 
 /**
  *
@@ -47,6 +51,66 @@ public class main extends javax.swing.JFrame {
     public main() {
         initComponents();
         pass.setText(generatepassword(8, true, true, true, true));
+        
+        addHoverEffect(jButton1, new Color(255, 182, 193), new Color(255, 105, 180));
+        addHoverEffect(jButton2, new Color(135, 206, 250), new Color(30, 144, 255));
+    }
+    
+    private void addHoverEffect(javax.swing.JButton button, Color hoverColor, Color defaultColor) {
+        button.setBackground(defaultColor);
+        button.setFont(button.getFont().deriveFont(18f));
+
+        button.addMouseListener(new MouseAdapter() {
+            Timer timer;
+            Color currentColor = defaultColor;
+            float defaultFontSize = 18f;
+            float hoverFontSize = 20f;  // Tamaño de fuente aumentado ligeramente
+            Dimension defaultSize = new Dimension(button.getWidth(), button.getHeight());
+            Dimension hoverSize = new Dimension(button.getWidth() + 10, button.getHeight() + 10);  // Aumento de tamaño pequeño
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                timer = new Timer(10, evt -> {
+                    currentColor = blendColors(currentColor, hoverColor, 0.1f);
+                    button.setBackground(currentColor);
+                    button.setPreferredSize(hoverSize);
+                    button.setFont(button.getFont().deriveFont(hoverFontSize));
+                    button.repaint();
+                    if (currentColor.equals(hoverColor)) {
+                        timer.stop();
+                    }
+                });
+                timer.start();
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                // Detener cualquier temporizador anterior antes de comenzar uno nuevo
+                if (timer != null && timer.isRunning()) {
+                    timer.stop();
+                }
+
+                // Crear y comenzar un nuevo temporizador para la salida
+                timer = new Timer(10, evt -> {
+                    currentColor = blendColors(currentColor, defaultColor, 0.1f);
+                    button.setBackground(currentColor);
+                    button.setPreferredSize(defaultSize);
+                    button.setFont(button.getFont().deriveFont(defaultFontSize));
+                    button.repaint();
+                    if (currentColor.equals(defaultColor)) {
+                        timer.stop(); // Detener el temporizador cuando llegue al color final
+                    }
+                });
+                timer.start();
+            }
+        });
+    }
+    
+    private Color blendColors(Color c1, Color c2, float ratio) {
+        int red = (int) (c1.getRed() * (1 - ratio) + c2.getRed() * ratio);
+        int green = (int) (c1.getGreen() * (1 - ratio) + c2.getGreen() * ratio);
+        int blue = (int) (c1.getBlue() * (1 - ratio) + c2.getBlue() * ratio);
+        return new Color(red, green, blue);
     }
 
     @SuppressWarnings("unchecked")
@@ -96,17 +160,19 @@ public class main extends javax.swing.JFrame {
        jButton1.setBorder(BorderFactory.createLineBorder(new Color(255, 105, 180)));
        jButton1.setBackground(new Color(255, 105, 180));
        jButton1.setForeground(Color.WHITE);
-       jButton1.setFocusPainted(false); jButton1.setOpaque(true);
+       jButton1.setFocusPainted(false); 
+       jButton1.setOpaque(true);
        jButton1.addActionListener(new ActionListener()
        { public void actionPerformed(ActionEvent evt) { jButton1ActionPerformed(evt);
             }
         });
 
         jButton2.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 18));
-        jButton2.setText("Copiar"); 
+        jButton2.setText("Copiar");
         jButton2.setBorder(BorderFactory.createLineBorder(new Color(30, 144, 255)));
         jButton2.setBackground(new Color(30, 144, 255)); jButton2.setForeground(Color.WHITE);
-        jButton2.setFocusPainted(false); jButton2.setOpaque(true);
+        jButton2.setFocusPainted(false); 
+        jButton2.setOpaque(true);
         jButton2.addActionListener(new ActionListener() { public void actionPerformed(ActionEvent evt) { jButton2ActionPerformed(evt);
             }
         });
@@ -173,6 +239,41 @@ public class main extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>
+    
+    private void ventana() {
+        // Código generado previamente
+        jButton1 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
+        jSlider1 = new javax.swing.JSlider();
+        msg = new javax.swing.JLabel();
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        jButton1.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 18));
+        jButton1.setText("Generar Nueva Contraseña");
+        jButton1.setBorder(BorderFactory.createLineBorder(new Color(255, 105, 180)));
+        jButton1.setFocusPainted(false);
+        jButton1.setOpaque(true);
+
+        jButton2.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 18));
+        jButton2.setText("Copiar");
+        jButton2.setBorder(BorderFactory.createLineBorder(new Color(30, 144, 255)));
+        jButton2.setFocusPainted(false);
+        jButton2.setOpaque(true);
+
+        jSlider1.setMaximum(20);
+        jSlider1.setMinimum(8);
+        jSlider1.setValue(8);
+        jSlider1.addChangeListener(evt -> {
+            msg.setText("Longitud: " + jSlider1.getValue());
+        });
+
+        msg.setText("Longitud: 8");
+
+        // Disposición del diseño omitida para mayor claridad
+
+        pack();
+    }
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {                                         
         pass.setText(generatepassword(jSlider1.getValue(), chkLower.isSelected(), chkUpper.isSelected(), chkNumbers.isSelected(), chkSymbols.isSelected()));
@@ -190,10 +291,8 @@ public class main extends javax.swing.JFrame {
     }                                        
 
     public static void main(String args[]) {
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new main().setVisible(true);
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            new main().setVisible(true);
         });
     }
 
@@ -257,7 +356,7 @@ public class main extends javax.swing.JFrame {
 
 /*
     @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">                          
     private void initComponents() {
 
         jLabel1 = new javax.swing.JLabel();
@@ -354,21 +453,21 @@ public class main extends javax.swing.JFrame {
         );
 
         pack();
-    }// </editor-fold>//GEN-END:initComponents
+    }// </editor-fold>                        
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {                                         
 
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }                                        
 
-    private void jSlider1StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlider1StateChanged
+    private void jSlider1StateChanged(javax.swing.event.ChangeEvent evt) {                                      
 
-    }//GEN-LAST:event_jSlider1StateChanged
+    }                                     
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {                                         
 
-    }//GEN-LAST:event_jButton2ActionPerformed
+    }                                        
 
-    // Variables declaration - do not modify//GEN-BEGIN:variables
+    // Variables declaration - do not modify                     
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
@@ -376,5 +475,5 @@ public class main extends javax.swing.JFrame {
     private javax.swing.JSlider jSlider1;
     private javax.swing.JLabel msg;
     private javax.swing.JTextPane pass;
-    // End of variables declaration//GEN-END:variables
+    // End of variables declaration                   
 */
