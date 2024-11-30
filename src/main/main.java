@@ -3,13 +3,17 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package main;
+import java.awt.Color;
 import java.awt.Toolkit;
 import java.awt.datatransfer.StringSelection;
 import java.awt.Toolkit;
 import java.awt.datatransfer.StringSelection;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Random;
 import javax.swing.JCheckBox;
 import java.util.Random;
+import javax.swing.BorderFactory;
 
 /**
  *
@@ -87,21 +91,23 @@ public class main extends javax.swing.JFrame {
             }
         });
 
-        jButton1.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 18));
-        jButton1.setText("Generar Nueva Contraseña");
-        jButton1.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+       jButton1.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 18));
+       jButton1.setText("Generar Nueva Contraseña");
+       jButton1.setBorder(BorderFactory.createLineBorder(new Color(255, 105, 180)));
+       jButton1.setBackground(new Color(255, 105, 180));
+       jButton1.setForeground(Color.WHITE);
+       jButton1.setFocusPainted(false); jButton1.setOpaque(true);
+       jButton1.addActionListener(new ActionListener()
+       { public void actionPerformed(ActionEvent evt) { jButton1ActionPerformed(evt);
             }
         });
 
         jButton2.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 18));
-        jButton2.setText("Copiar");
-        jButton2.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+        jButton2.setText("Copiar"); 
+        jButton2.setBorder(BorderFactory.createLineBorder(new Color(30, 144, 255)));
+        jButton2.setBackground(new Color(30, 144, 255)); jButton2.setForeground(Color.WHITE);
+        jButton2.setFocusPainted(false); jButton2.setOpaque(true);
+        jButton2.addActionListener(new ActionListener() { public void actionPerformed(ActionEvent evt) { jButton2ActionPerformed(evt);
             }
         });
 
@@ -288,6 +294,7 @@ public class main extends javax.swing.JFrame {
             }
         });
 
+        jButton1.setBackground(new java.awt.Color(255, 0, 0));
         jButton1.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 18)); // NOI18N
         jButton1.setText("generate new password");
         jButton1.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
@@ -297,6 +304,7 @@ public class main extends javax.swing.JFrame {
             }
         });
 
+        jButton2.setBackground(new java.awt.Color(255, 0, 0));
         jButton2.setFont(new java.awt.Font("Yu Gothic UI Semibold", 0, 18)); // NOI18N
         jButton2.setText("copy ");
         jButton2.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
