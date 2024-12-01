@@ -14,6 +14,9 @@ import java.util.Random;
 import javax.swing.JCheckBox;
 import java.util.Random;
 import javax.swing.BorderFactory;
+import javax.swing.GroupLayout;
+import javax.swing.JLabel;
+import javax.swing.SwingUtilities;
 
 /**
  *
@@ -21,7 +24,7 @@ import javax.swing.BorderFactory;
  */
 
 public class main extends javax.swing.JFrame {
-
+    private javax.swing.JLabel lblStrength;
     private static final String LOWERCASE = "qwertyuiopasdfghjklzxcvbnm";
     private static final String UPPERCASE = "QWERTYUIOPASDFGHJKLZXCVBNM";
     private static final String NUMBER = "0123456789";
@@ -43,10 +46,57 @@ public class main extends javax.swing.JFrame {
         }
         return new String(password);
     }
+    
+    public static String evaluatePasswordStrength(String password) {
+    int length = password.length();
+    boolean hasLower = password.matches(".*[a-z].*");
+    boolean hasUpper = password.matches(".*[A-Z].*");
+    boolean hasNumber = password.matches(".*[0-9].*");
+    @SuppressWarnings("MalformedRegexp")
+    boolean hasSymbol = password.matches(".*[#$%&=?*+-!].*");
+
+    int score = 0;
+    if (length >= 8) score++;
+    if (length >= 12) score++;
+    if (hasLower) score++;
+    if (hasUpper) score++;
+    if (hasNumber) score++;
+    if (hasSymbol) score++;
+
+    if (score <= 2) return "Débil";
+    if (score <= 4) return "Moderada";
+    return "Fuerte";
+}
+
 
     public main() {
         initComponents();
         pass.setText(generatepassword(8, true, true, true, true));
+        lblStrength = new javax.swing.JLabel();
+        lblStrength.setFont(new java.awt.Font("Segoe UI Semibold", 0, 12));
+        lblStrength.setText("Seguridad: Débil");
+        // ... (resto de tu código)
+
+
+lblStrength = new JLabel("Seguridad: Débil");
+add(lblStrength); 
+
+
+GroupLayout layout = new GroupLayout(getContentPane());
+getContentPane().setLayout(layout);
+layout.setHorizontalGroup(
+    
+    layout.createParallelGroup()
+        .addComponent(lblStrength)
+     
+);
+layout.setVerticalGroup(
+   
+    layout.createSequentialGroup()
+        .addComponent(lblStrength)
+       
+);
+        
     }
 
     @SuppressWarnings("unchecked")
@@ -109,6 +159,7 @@ public class main extends javax.swing.JFrame {
         jButton2.setFocusPainted(false); jButton2.setOpaque(true);
         jButton2.addActionListener(new ActionListener() { public void actionPerformed(ActionEvent evt) { jButton2ActionPerformed(evt);
             }
+            
         });
 
         chkLower.setText("Letras Minúsculas");
@@ -172,18 +223,44 @@ public class main extends javax.swing.JFrame {
         );
 
         pack();
-    }// </editor-fold>
+    }
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {                                         
         pass.setText(generatepassword(jSlider1.getValue(), chkLower.isSelected(), chkUpper.isSelected(), chkNumbers.isSelected(), chkSymbols.isSelected()));
-    }                                        
+    } 
+      private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {
+    String newPass = generatepassword(jSlider1.getValue(), chkLower.isSelected(), chkUpper.isSelected(), chkNumbers.isSelected(), chkSymbols.isSelected());
+    pass.setText(newPass);
 
-    private void jSlider1StateChanged(javax.swing.event.ChangeEvent evt) {                                      
+    // Asegurar que la actualización se realice en el hilo de eventos de Swing
+    SwingUtilities.invokeLater(() -> {
+        // Calcular la fortaleza de la contraseña
+        String strength = evaluatePasswordStrength(newPass);
+        // Actualizar el JLabel con la fortaleza
+        lblStrength.setText("Seguridad: " + strength);
+        // Forzar una actualización de la pintura
+        getContentPane().repaint();
+    });
+}
+
+private void jSlider1StateChanged(javax.swing.event.ChangeEvent evt) {
+    String newPass = generatepassword(jSlider1.getValue(), chkLower.isSelected(), chkUpper.isSelected(), chkNumbers.isSelected(), chkSymbols.isSelected());
+    pass.setText(newPass);
+
+    SwingUtilities.invokeLater(() -> {
+        lblStrength.setText("Seguridad: " + evaluatePasswordStrength(newPass));
+        msg.setText("Longitud: " + jSlider1.getValue());
+        getContentPane().repaint(); // Forzar una actualización de la pintura
+    });
+}
+ 
+
+    private void jSlider2StateChanged(javax.swing.event.ChangeEvent evt) {                                      
         pass.setText(generatepassword(jSlider1.getValue(), chkLower.isSelected(), chkUpper.isSelected(), chkNumbers.isSelected(), chkSymbols.isSelected()));
         msg.setText("Longitud: " + jSlider1.getValue());
     }                                     
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {                                         
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {                                         
         String password = pass.getText();
         StringSelection stringSelection = new StringSelection(password);
         Toolkit.getDefaultToolkit().getSystemClipboard().setContents(stringSelection, null);
